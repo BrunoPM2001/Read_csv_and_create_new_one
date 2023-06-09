@@ -30,6 +30,7 @@ app.get("/importCsv", (req, res) => {
 
   let res1 = 0;
   let res2 = 0;
+  let res3 = 0;
   let finde_it = 0;
   let notFound = [];
   let moreThanOnce = [];
@@ -74,7 +75,8 @@ app.get("/importCsv", (req, res) => {
     //  If it's just one coincidence
     else if (finde_it == 1) {
       //  Save all empty cells in data1 - TO DO
-      data1[matchRow] = data2[i];
+      data1[matchRow]["DNI"] = data2[i]["DNI"];
+      res3++;
     }
     finde_it = 0;
   }
@@ -86,9 +88,10 @@ app.get("/importCsv", (req, res) => {
   //  Response in JSON
   res.json({
     message: "Success",
+    cuenta_inicial: data2.length,
     coincidencia_nombres: res1,
     coincidencia_nombres_y_grado: res2,
-    cuenta_inicial: data2.length,
+    actualizaciones_realizadas: res3,
     notFound,
     moreThanOnce,
   });
