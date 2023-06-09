@@ -1,5 +1,5 @@
 node_modules/
 package-lock.json
-.env
 
-excel/file1.xlsx
+inputs
+result
