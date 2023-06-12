@@ -3,6 +3,7 @@ import cors from "cors";
 import papa from "papaparse";
 import diacritics from "diacritics";
 import fs from "fs";
+import "dotenv/config";
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(cors());
 app.get("/importCsv", (req, res) => {
   //  Read csv to use it
   const csvData1 = fs.readFileSync("inputs/file1.csv", "utf8");
-  const csvData2 = fs.readFileSync("inputs/file2.csv", "utf8");
+  const csvData2 = fs.readFileSync("inputs/file23.csv", "utf8");
 
   //  Convert data to json
   const data1 = papa.parse(csvData1, {
@@ -28,6 +29,7 @@ app.get("/importCsv", (req, res) => {
     skipEmptyLines: true,
   }).data;
 
+  //  Vars
   let res1 = 0;
   let res2 = 0;
   let res3 = 0;
@@ -35,6 +37,7 @@ app.get("/importCsv", (req, res) => {
   let notFound = [];
   let moreThanOnce = [];
   let matchRow = 0;
+  let checkColumns = process.env.LIST_COLS.split(",");
 
   //  Search in all rows of data 2
   for (let i = 0; i < data2.length; i++) {
@@ -74,8 +77,12 @@ app.get("/importCsv", (req, res) => {
     }
     //  If it's just one coincidence
     else if (finde_it == 1) {
-      //  Save all empty cells in data1 - TO DO
-      data1[matchRow]["DNI"] = data2[i]["DNI"];
+      //  Save all empty cells in data1
+      checkColumns.forEach((item) => {
+        if (data1[matchRow][item].trim() == "") {
+          data1[matchRow][item] = data2[i][item];
+        }
+      });
       res3++;
     }
     finde_it = 0;
